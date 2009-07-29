@@ -87,7 +87,7 @@ IfMsgBox, Yes
 	FileRead,TabTrigs,%BundleDir%bank\tab.csv
 	FileRead,SpaceTrigs,%BundleDir%bank\space.csv
 	FileRead,NoTrigs,%BundleDir%bank\notrig.csv
-	FileAppend,¢Triggers¢`n,Texter Exports\%CurrentBundle%.texter
+	FileAppend,Â¢TriggersÂ¢`n,Texter Exports\%CurrentBundle%.texter
 	FileAppend,%EnterTrigs%`n,Texter Exports\%CurrentBundle%.texter
 	FileAppend,%TabTrigs%`n,Texter Exports\%CurrentBundle%.texter
 	FileAppend,%SpaceTrigs%`n,Texter Exports\%CurrentBundle%.texter
@@ -95,6 +95,31 @@ IfMsgBox, Yes
 	MsgBox,4,Your bundle was successfully created!,Congratulations, your bundle was successfully exported!`nYou can now share your bundle with the world by sending them the %CurrentBundle%.texter file.`nThey can add it to Texter through the import feature. `n`nYour export can be found at %A_WorkingDir%\Texter Export.`n`nWould you like to see the %CurrentBundle% bundle?
 IfMsgBox, Yes
 	Run,Texter Exports\
+}
+
+return
+
+EXPORTTOTEXT:
+GuiControlGet,CurrentBundle,,BundleTabs
+MsgBox,4,Confirm Bundle Export,Are you sure you want to export the %CurrentBundle% bundle?
+IfMsgBox, Yes
+{
+	IfNotExist %A_WorkingDir%\Texter Export
+		FileCreateDir,%A_WorkingDir%\Texter Exports
+	FileDelete,Texter Exports\%CurrentBundle%.txt
+	if (CurrentBundle = "Default")
+		BundleDir = 
+	else
+		BundleDir = bundles\%CurrentBundle%\
+	Loop,%BundleDir%replacements\*,0
+	{
+		FileRead,replacement,%A_LoopFileFullPath%
+		IfInString,replacement,`r`n
+			StringReplace,replacement,replacement,`r`n,`%bundlebreak,All
+		Hotstring := DeHexify(A_LoopFileName)
+		FileAppend,%Hotstring%`t%replacement%`n,Texter Exports\%CurrentBundle%.txt
+	}
+	MsgBox,Your export can be found at %A_WorkingDir%\Texter Export\%CurrentBundle%.txt.
 }
 
 return
@@ -145,7 +170,7 @@ if ErrorLevel = 0
 	  if (LineSwitch = 0)
 	  {
 	    LineSwitch := 1 - LineSwitch
-		if A_LoopReadLine = ¢Triggers¢
+		if A_LoopReadLine = Â¢TriggersÂ¢
 		{
 			readDefaultTriggers(ImportBundle, A_Index)
 			break
