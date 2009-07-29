@@ -3,6 +3,7 @@ MAINWINTOOLBAR:
 Menu, ToolsMenu, Add, P&references..., Preferences
 Menu, MgmtMenuBar, Add, &Tools, :ToolsMenu
 Menu, BundlesMenu, Add, &Export, Export
+Menu, BundlesMenu, Add, Export to Text &File, ExportToText
 Menu, BundlesMenu, Add, &Import, Import
 Menu, BundlesMenu, Add, &Add, AddBundle
 Menu, BundlesMenu, Add, &Remove, DeleteBundle
