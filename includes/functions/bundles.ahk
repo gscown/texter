@@ -99,27 +99,36 @@ IfMsgBox, Yes
 
 return
 
-EXPORTTOTEXT:
+EXPORTTOTEXTEXPANDER:
 GuiControlGet,CurrentBundle,,BundleTabs
 MsgBox,4,Confirm Bundle Export,Are you sure you want to export the %CurrentBundle% bundle?
 IfMsgBox, Yes
 {
 	IfNotExist %A_WorkingDir%\Texter Export
 		FileCreateDir,%A_WorkingDir%\Texter Exports
-	FileDelete,Texter Exports\%CurrentBundle%.txt
+	FileDelete,Texter Exports\%CurrentBundle%.textexpander
 	if (CurrentBundle = "Default")
 		BundleDir = 
 	else
 		BundleDir = bundles\%CurrentBundle%\
+	FileAppend,<?xml version="1.0" encoding="UTF-8"?>`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,<plist version="1.0">`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,<dict>`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,`t<key>snippetsTE2</key>`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,`t<array>`n,Texter Exports\%CurrentBundle%.textexpander
 	Loop,%BundleDir%replacements\*,0
 	{
 		FileRead,replacement,%A_LoopFileFullPath%
 		IfInString,replacement,`r`n
 			StringReplace,replacement,replacement,`r`n,`%bundlebreak,All
 		Hotstring := DeHexify(A_LoopFileName)
-		FileAppend,%Hotstring%`t%replacement%`n,Texter Exports\%CurrentBundle%.txt
+		FileAppend,`t`t<dict>`n`t`t`t<key>abbreviation</key>`n`t`t`t<string>%Hotstring%</string>`n`t`t`t<key>plainText</key>`n`t`t`t<string>%replacement%</string>`n`t`t</dict>`n,Texter Exports\%CurrentBundle%.textexpander
 	}
-	MsgBox,Your export can be found at %A_WorkingDir%\Texter Export\%CurrentBundle%.txt.
+	FileAppend,`t</array>`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,</dict>`n,Texter Exports\%CurrentBundle%.textexpander
+	FileAppend,</plist>`n,Texter Exports\%CurrentBundle%.textexpander
+	MsgBox,Your export can be found at %A_WorkingDir%\Texter Export\%CurrentBundle%.textexpander.
 }
 
 return
